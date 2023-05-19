@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     setFixedSize(700,300);
+    this->setStyleSheet("QMainWindow {background-image: url(:/images/wsdaqwd1.png);}");
 
     qDebug() << mdb.conn();
 }
