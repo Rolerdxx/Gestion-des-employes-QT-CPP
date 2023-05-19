@@ -1,8 +1,8 @@
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "dbmanager.h"
 
 
 
@@ -19,8 +19,14 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_next_clicked();
+
+    void on_login_clicked();
+
 private:
     Ui::MainWindow *ui;
+    dbmanager mdb;
 };
 
 #endif // MAINWINDOW_H
