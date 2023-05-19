@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     setFixedSize(700,300);
 
-    qDebug() << mdb.conn();
+        qDebug() << mdb.conn();
 }
 
 MainWindow::~MainWindow()
