@@ -10,6 +10,12 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+struct Departement {
+    int id;
+    QString libelle;
+    QString adresse;
+};
+
 class MainWindow : public QMainWindow
 
 {
@@ -67,9 +73,13 @@ private slots:
 
     void on_Supp_btn_2_clicked();
 
+    void on_tableWidget_clicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     dbmanager mdb;
+    std::map<int, std::map<QString, QVariant>> personnelData;
+    std::vector<Departement> departementData;
     int selected=0;
     int selecteddep=0;
     int selectedAb=0;

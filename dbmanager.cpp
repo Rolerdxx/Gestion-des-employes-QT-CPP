@@ -8,8 +8,7 @@
 dbmanager::dbmanager()
 {
     QString dir = QDir::currentPath();
-    QRegularExpression separatorRegex("[/\\\\]");
-    QStringList directories = dir.split(separatorRegex);
+    QStringList directories = dir.split(QRegularExpression("[/\\\\]"));
     if (directories.size() > 1) {
         directories.removeLast();
         dir = directories.join("/")+"/Gestion-des-employes-QT-CPP/gedb.db";
@@ -28,6 +27,22 @@ void dbmanager::disc()
     db.close();
 }
 
+QSqlQuery dbmanager::getPer()
+{
+    QSqlQuery query(db);
+    query.prepare("SELECT id_P, nom, prenom, adress, cin, fonction, date_embauche, salaire, Libelle "
+                  "FROM Personnel p, Departement d WHERE p.dep=d.id_Dep");
+    try{
+        if (!query.exec()) {
+            throw query.lastError();
+        }
+        return query;
+    }catch(QSqlError err){
+        qDebug() << err.text();
+        return query;
+    }
+}
+
 bool dbmanager::addPer(const QString &nom, const QString &prenom, const QString &adresse, const QString &fonction, const QString &cin, const QString &date, const float &salaire, const int &Dep)
 {
     QSqlQuery query(db);
@@ -41,10 +56,14 @@ bool dbmanager::addPer(const QString &nom, const QString &prenom, const QString 
     query.bindValue(":s",salaire);
     query.bindValue(":de",Dep);
 
-    if(query.exec()){
-        return true;
-    }else{
-        qDebug() << query.lastError();
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
         return false;
     }
 }
@@ -64,10 +83,14 @@ bool dbmanager::modPer(const int &id, const QString &nom, const QString &prenom,
     query.bindValue(":id",id);
 
 
-    if(query.exec()){
-        return true;
-    }else{
-        qDebug() << query.lastError();
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
         return false;
     }
 }
@@ -78,10 +101,31 @@ bool dbmanager::delPer(const int &id)
     query.prepare("DELETE FROM Personnel WHERE id_P=:id");
     query.bindValue(":id",id);
 
-    if(query.exec()){
-        return true;
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
+        return false;
     }
-    return false;
+}
+
+QSqlQuery dbmanager::getDep()
+{
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM Departement");
+    try{
+        if (!query.exec()) {
+            throw query.lastError();
+        }
+        return query;
+    }catch(QSqlError err){
+        qDebug() << err.text();
+        return query;
+    }
 }
 
 bool dbmanager::addDep(const QString &lib, const QString &ad)
@@ -91,10 +135,14 @@ bool dbmanager::addDep(const QString &lib, const QString &ad)
     query.bindValue(":n",lib);
     query.bindValue(":p",ad);
 
-    if(query.exec()){
-        return true;
-    }else{
-        qDebug() << query.lastError();
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
         return false;
     }
 }
@@ -108,10 +156,14 @@ bool dbmanager::modDep(const int &id, const QString &lib, const QString &ad)
     query.bindValue(":id",id);
 
 
-    if(query.exec()){
-        return true;
-    }else{
-        qDebug() << query.lastError();
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
         return false;
     }
 }
@@ -137,10 +189,14 @@ bool dbmanager::addAb(const QString &date, const QString &datef, const QString &
     query.bindValue(":r",rai);
     query.bindValue(":p",idp);
 
-    if(query.exec()){
-        return true;
-    }else{
-        qDebug() << query.lastError();
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
         return false;
     }
 }
@@ -156,10 +212,14 @@ bool dbmanager::modAb(const int &id, const QString &date, const QString &datef, 
     query.bindValue(":id",id);
 
 
-    if(query.exec()){
-        return true;
-    }else{
-        qDebug() << query.lastError();
+    try{
+        if(query.exec()){
+            return true;
+        }else{
+            throw query.lastError();
+        }
+    }catch(QSqlError err){
+        qDebug() << err.text();
         return false;
     }
 }
@@ -183,15 +243,23 @@ bool dbmanager::login(const QString &logname, const QString &mdp)
     query.bindValue(":log", logname);
     query.bindValue(":mm", mdp);
 
-    if (query.exec())
-    {
-        if (query.next())
+    try{
+        if (query.exec())
         {
-            db.close();
-            return true;
+            if (query.next())
+            {
+                db.close();
+                return true;
+            }else{
+                throw query.lastError();
+            }
+        }else{
+            throw query.lastError();
         }
-    }else{
-        qDebug() << query.lastError().text();
+    }catch(QSqlError err){
+        if(err.text() == ""){
+            qDebug() << "Invalid";
+        }
     }
     return false;
 }

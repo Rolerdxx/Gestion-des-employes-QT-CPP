@@ -2,12 +2,14 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QSqlQueryModel>
+#include <QSqlQuery>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->stackedWidget->setCurrentIndex(0);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     setFixedSize(700,300);
     this->setStyleSheet("QMainWindow {background-image: url(./images/1.png);}");
@@ -25,10 +27,47 @@ MainWindow::~MainWindow()
 void MainWindow::perRef()
 {
     mdb.conn();
-    QSqlQueryModel *model = new QSqlQueryModel;
-    model->setQuery("select id_P as id,nom,prenom,adress,cin,fonction,salaire,date_embauche,libelle as Departement from Personnel p,Departement d where p.dep=d.id_Dep");
-    ui->tableView->setModel(model);
+    QSqlQuery query = mdb.getPer();
+    while (query.next()) {
+        int id = query.value(0).toInt();
+        std::map<QString, QVariant> data;
+        data["nom"] = query.value(1).toString();
+        data["prenom"] = query.value(2).toString();
+        data["adress"] = query.value(3).toString();
+        data["cin"] = query.value(4).toString();
+        data["fonction"] = query.value(5).toInt();
+        data["date_embauche"] = query.value(6).toDate();
+        data["salaire"] = query.value(7).toDouble();
+        data["Departement"] = query.value(8).toString();
+        personnelData[id] = data;
+    }
     mdb.disc();
+
+//    for(int i=0; i<ui->tableWidget->rowCount(); ++i){
+//        ui->tableWidget->removeRow(i);
+//    }
+    ui->tableWidget->clearContents();
+    ui->tableWidget->setRowCount(0);
+
+    int row = 0;
+    for (const auto& entry : personnelData) {
+        int id = entry.first;
+        const std::map<QString, QVariant>& data = entry.second;
+
+        ui->tableWidget->insertRow(row);
+        ui->tableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(id)));
+        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(data.at("nom").toString()));
+        ui->tableWidget->setItem(row, 2, new QTableWidgetItem(data.at("prenom").toString()));
+        ui->tableWidget->setItem(row, 3, new QTableWidgetItem(data.at("adress").toString()));
+        ui->tableWidget->setItem(row, 4, new QTableWidgetItem(data.at("cin").toString()));
+        ui->tableWidget->setItem(row, 5, new QTableWidgetItem(data.at("fonction").toString()));
+        ui->tableWidget->setItem(row, 6, new QTableWidgetItem(data.at("date_embauche").toDate().toString("M/d/yyyy"))); // Date d'embauche
+        ui->tableWidget->setItem(row, 7, new QTableWidgetItem(data.at("salaire").toString()));
+        ui->tableWidget->setItem(row, 8, new QTableWidgetItem(data.at("Departement").toString()));
+
+        row++;
+    }
+    ui->tableWidget->resizeColumnsToContents();
 }
 
 void MainWindow::defRef()
@@ -43,10 +82,26 @@ void MainWindow::defRef()
 void MainWindow::depRef()
 {
     mdb.conn();
-    QSqlQueryModel *model = new QSqlQueryModel;
-    model->setQuery("select * from Departement");
-    ui->tableView_5->setModel(model);
+    QSqlQuery query = mdb.getDep();
+    while (query.next()) {
+        Departement departement;
+        departement.id = query.value("id_Dep").toInt();
+        departement.libelle = query.value("libelle").toString();
+        departement.adresse = query.value("adresse").toString();
+        departementData.push_back(departement);
+    }
+    for (long long unsigned int row = 0; row < departementData.size(); ++row) {
+        const Departement& departement = departementData[row];
+        ui->tableWidget_2->setItem(row, 0, new QTableWidgetItem(QString::number(departement.id)));
+        ui->tableWidget_2->setItem(row, 1, new QTableWidgetItem(departement.libelle));
+        ui->tableWidget_2->setItem(row, 2, new QTableWidgetItem(departement.adresse));
+    }
     mdb.disc();
+//    mdb.conn();
+//    QSqlQueryModel *model = new QSqlQueryModel;
+//    model->setQuery("select * from Departement");
+//    ui->tableView_5->setModel(model);
+//    mdb.disc();
 }
 
 void MainWindow::abRef()
@@ -121,21 +176,21 @@ void MainWindow::on_Modifier_btn_clicked()
 
 void MainWindow::on_tableView_clicked(const QModelIndex &index)
 {
-    selected = ui->tableView->model()->index(index.row(),0).data().toString().toInt();
-    ui->Nom_edit->setText(ui->tableView->model()->index(index.row(),1).data().toString());
-    ui->Prenom_edit->setText(ui->tableView->model()->index(index.row(),2).data().toString());
-    ui->Adr_edit->setText(ui->tableView->model()->index(index.row(),3).data().toString());
-    ui->Cin_edit->setText(ui->tableView->model()->index(index.row(),4).data().toString());
-    ui->Fct_edit->setText(ui->tableView->model()->index(index.row(),5).data().toString());
-    ui->dateEdit->setText(ui->tableView->model()->index(index.row(),7).data().toString());
-    ui->Salaire_edit_3->setText(ui->tableView->model()->index(index.row(),6).data().toString());
+//    selected = ui->tableView->model()->index(index.row(),0).data().toString().toInt();
+//    ui->Nom_edit->setText(ui->tableView->model()->index(index.row(),1).data().toString());
+//    ui->Prenom_edit->setText(ui->tableView->model()->index(index.row(),2).data().toString());
+//    ui->Adr_edit->setText(ui->tableView->model()->index(index.row(),3).data().toString());
+//    ui->Cin_edit->setText(ui->tableView->model()->index(index.row(),4).data().toString());
+//    ui->Fct_edit->setText(ui->tableView->model()->index(index.row(),5).data().toString());
+//    ui->dateEdit->setText(ui->tableView->model()->index(index.row(),7).data().toString());
+//    ui->Salaire_edit_3->setText(ui->tableView->model()->index(index.row(),6).data().toString());
 
-    for (int var = 0; var < ui->depa->count(); ++var) {
-        ui->depa->setCurrentIndex(var);
-        if(ui->depa->currentText()==ui->tableView->model()->index(index.row(),7).data().toString()){
-            break;
-        }
-    }
+//    for (int var = 0; var < ui->depa->count(); ++var) {
+//        ui->depa->setCurrentIndex(var);
+//        if(ui->depa->currentText()==ui->tableView->model()->index(index.row(),7).data().toString()){
+//            break;
+//        }
+//    }
 }
 
 
@@ -187,9 +242,9 @@ void MainWindow::on_Modifier_btn_5_clicked()
 
 void MainWindow::on_tableView_5_clicked(const QModelIndex &index)
 {
-    selecteddep = ui->tableView_5->model()->index(index.row(),0).data().toString().toInt();
-    ui->libelle_edit->setText(ui->tableView_5->model()->index(index.row(),1).data().toString());
-    ui->Adress_dep_edit->setText(ui->tableView_5->model()->index(index.row(),2).data().toString());
+//    selecteddep = ui->tableView_5->model()->index(index.row(),0).data().toString().toInt();
+//    ui->libelle_edit->setText(ui->tableView_5->model()->index(index.row(),1).data().toString());
+//    ui->Adress_dep_edit->setText(ui->tableView_5->model()->index(index.row(),2).data().toString());
 }
 
 
@@ -259,5 +314,19 @@ void MainWindow::on_Supp_btn_2_clicked()
         abRef();
     }
     mdb.disc();
+}
+
+
+void MainWindow::on_tableWidget_clicked(const QModelIndex &index)
+{
+        selected = ui->tableWidget->model()->index(index.row(),0).data().toString().toInt();
+        ui->Nom_edit->setText(ui->tableWidget->model()->index(index.row(),1).data().toString());
+        ui->Prenom_edit->setText(ui->tableWidget->model()->index(index.row(),2).data().toString());
+        ui->Adr_edit->setText(ui->tableWidget->model()->index(index.row(),3).data().toString());
+        ui->Cin_edit->setText(ui->tableWidget->model()->index(index.row(),4).data().toString());
+        ui->Fct_edit->setText(ui->tableWidget->model()->index(index.row(),5).data().toString());
+        ui->dateEdit->setText(ui->tableWidget->model()->index(index.row(),6).data().toString());
+        ui->Salaire_edit_3->setText(ui->tableWidget->model()->index(index.row(),7).data().toString());
+        qDebug() << selected;
 }
 

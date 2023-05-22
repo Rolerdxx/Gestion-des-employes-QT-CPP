@@ -30,7 +30,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="Login">
        <widget class="QPushButton" name="login">
@@ -159,22 +159,6 @@
          </rect>
         </property>
        </widget>
-       <widget class="QTableView" name="tableView">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>100</y>
-          <width>851</width>
-          <height>221</height>
-         </rect>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-       </widget>
        <widget class="QToolButton" name="Ajouter_btn">
         <property name="geometry">
          <rect>
@@ -259,6 +243,67 @@
           <height>21</height>
          </rect>
         </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>110</y>
+          <width>821</width>
+          <height>192</height>
+         </rect>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Nom</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Prénom</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Adresse</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>CIN</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Fonction</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Date d'embauche</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Salaire</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Departement</string>
+         </property>
+        </column>
        </widget>
       </widget>
       <widget class="QWidget" name="Absense">
@@ -385,22 +430,6 @@
          <string>Supprimer</string>
         </property>
        </widget>
-       <widget class="QTableView" name="tableView_5">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>110</y>
-          <width>861</width>
-          <height>191</height>
-         </rect>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-       </widget>
        <widget class="QToolButton" name="Ajouter_btn_5">
         <property name="geometry">
          <rect>
@@ -459,6 +488,31 @@
         <property name="text">
          <string>back</string>
         </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>100</y>
+          <width>831</width>
+          <height>192</height>
+         </rect>
+        </property>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Libelle</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Adresse</string>
+         </property>
+        </column>
        </widget>
       </widget>
      </widget>
